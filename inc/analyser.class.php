@@ -7,6 +7,7 @@ class analyser{
     protected $_character_count = array();
     protected $_character_before = array();
     protected $_character_after = array();
+    protected $_character_distance = array();
     protected $_stripped_text = "";
 
     public function __construct(){
@@ -16,7 +17,8 @@ class analyser{
     public function init(){
         
         if(isset($_POST['texttoanalyse'])){
-            $this->build_stats($_POST['texttoanalyse']);
+            $texttoanalyse = strtolower($_POST['texttoanalyse']);
+            $this->build_stats($texttoanalyse);
             $this->print_stats();
         }
 
@@ -33,6 +35,21 @@ class analyser{
             if( !in_array($character_text, $this->_character_found) ){
                 $this->_character_found[] = $character_text;
                 $this->_character_count[$character_text] = substr_count($this->_stripped_text, $character_text);
+
+
+                //calculate max distance
+                $max_distance = $key_text;
+                foreach($stripped_text_arr as $k_text => $c_text){
+                    if( ( $character_text ==  $c_text) && ( $k_text != $key_text ) ){
+                        if( ( $k_text - $max_distance ) > $max_distance ){
+                            $this->_character_distance[$character_text] = $k_text - $max_distance;
+                        }else{
+                            $this->_character_distance[$character_text] = $max_distance;
+                        }
+                    }
+                }
+
+
             }
 
             if( isset($stripped_text_arr[$key_text - 1]) ){
@@ -56,7 +73,7 @@ class analyser{
     public function print_stats(){
         echo "Text: ".$this->_stripped_text."<br>";
         echo "<table>";
-        echo "<tr><td>Character</td><td>Ocurrences</td><td>Before</td><td>After</td></tr>";
+        echo "<tr><td>Character</td><td>Ocurrences</td><td>Before</td><td>After</td><td>Max. Distance</td></tr>";
         foreach( $this->_character_found as $key_c => $value_c ){
              
             $stripped_text_arr = str_split($this->_stripped_text);
@@ -81,11 +98,18 @@ class analyser{
             }
             $after = array_unique($after);
 
+            if( ( count($before) >= 2 ) || ( count($after) >= 2 ) ) {  
+                $show_distance = $this->_character_distance[$value_c];
+            }else{
+                $show_distance = "";
+            }
+
             echo "<tr>";
             echo "<td>".$value_c."</td>";
             echo "<td>".$this->_character_count[$value_c]."</td>";
             echo "<td>".implode(",", $before)."</td>";
             echo "<td>".implode(",", $after)."</td>";
+            echo "<td>".$show_distance."</td>";
             echo "</tr>";
         }
         echo "</table>";
