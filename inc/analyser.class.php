@@ -10,10 +10,18 @@ class analyser{
     protected $_character_distance = array();
     protected $_stripped_text = "";
 
-    public function __construct(){
+    /**
+     * __construct
+     *
+     * @return void
+     */
+    public function __construct(){}
 
-    }
-
+    /**
+     * init
+     *
+     * @return void
+     */
     public function init(){
         
         if(isset($_POST['texttoanalyse'])){
@@ -24,6 +32,13 @@ class analyser{
 
     }
 
+    /**
+     * build_stats
+     *
+     * @param  mixed $texttoanalyse
+     *
+     * @return void
+     */
     public function build_stats($texttoanalyse){
 
         $this->_stripped_text = preg_replace('/\s/', '', $texttoanalyse);
@@ -35,7 +50,6 @@ class analyser{
             if( !in_array($character_text, $this->_character_found) ){
                 $this->_character_found[] = $character_text;
                 $this->_character_count[$character_text] = substr_count($this->_stripped_text, $character_text);
-
 
                 //calculate max distance
                 $max_distance = $key_text;
@@ -64,12 +78,15 @@ class analyser{
                 $this->_character_after[$key_text] = "";
             }
 
-
         }
-
 
     }
 
+    /**
+     * print_stats
+     *
+     * @return void
+     */
     public function print_stats(){
         echo "Text: ".$this->_stripped_text."<br>";
         echo "<table>";
@@ -116,7 +133,18 @@ class analyser{
         
     }
 
+    /**
+     * __get
+     *
+     * @param  mixed $name
+     *
+     * @return void
+     */
+    public function __get($name){
+        return $this->$name;
+    }
+
+    
 }
 
 $analyser = new analyser();
-$analyser->init();
