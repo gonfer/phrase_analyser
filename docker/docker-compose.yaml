@@ -9,6 +9,8 @@ services:
       - "80:80" # setting our ports for networking
       - "9000:9000" # for xdebug
     restart: always
-    image: webdevops/php-apache-dev:7.2
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes: # this is where we tell Docker what to pay attention to
       - ../:/app/ # mapping our custom theme to the container
