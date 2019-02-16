@@ -1,0 +1,14 @@
+# docker-compose.yaml
+
+version: '3.1' # version of docker-compose to use
+
+services:
+  php:
+    container_name: phrase_analyser # name of our wordpress container
+    ports:
+      - "80:80" # setting our ports for networking
+      - "9000:9000" # for xdebug
+    restart: always
+    image: webdevops/php-apache-dev:7.2
+    volumes: # this is where we tell Docker what to pay attention to
+      - ../:/app/ # mapping our custom theme to the container
